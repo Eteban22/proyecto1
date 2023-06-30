@@ -17,7 +17,6 @@ app.use((req, res, next) => {
     next();
 });
 
-
 //Manejo de errores simple (TP)
 app.get('*', (req, res) => {
     res.status(404).send(`Lo siento, la página que buscas no existe.`);
