@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "Proyecto 01 - Para Curso de Programación BackEnd - UNTREF",
     "scripts": {
-        "start": "nodemon ./src/server.js",
+        "start": "nodemon ./server.js",
         "eslint": "eslint ./src"
     },
     "repository": {

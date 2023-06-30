@@ -1,1 +1,10 @@
-[]
+[
+    {
+        "id": 1,
+        "product_type": "Camara",
+        "marca": "Nikon",
+        "model": "D750",
+        "price": 750,
+        "stock": 50
+    }
+]
