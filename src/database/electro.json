@@ -1,10 +1,26 @@
 [
-    {
-        "id": 1,
-        "product_type": "Camara",
-        "marca": "Nikon",
-        "model": "D750",
-        "price": 750,
-        "stock": 50
-    }
+	{
+		"id": 1,
+		"prodType": "Camara",
+		"brand": "Nikon",
+		"model": "D5300",
+		"price": 750,
+		"stock": 50
+	},
+	{
+		"id": 2,
+		"prodType": "Lente",
+		"brand": "Nikon",
+		"model": "35mm",
+		"price": 200,
+		"stock": 5
+	},
+	{
+		"id": 3,
+		"prodType": "Lente",
+		"brand": "Cannon",
+		"model": "80mm",
+		"price": 250,
+		"stock": 7
+	}
 ]
