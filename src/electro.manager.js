@@ -1,11 +1,13 @@
 const fs = require("fs");
 const path = require("path");
 
+require('dotenv').config();
+
 const DB = path.join(__dirname, "./database/electro.json");
 
-function create(frutas) {
+function create(electrodomesticos) {
     return new Promise((resolve, reject) => {
-        fs.writeFile(DB, JSON.stringify(frutas, null, "\t"), "utf8", (error) => {
+        fs.writeFile(DB, JSON.stringify(electrodomesticos, null, "\t"), "utf8", (error) => {
             if (error) reject(new Error("Error. No se pudo escribir"));
 
             resolve(true);
@@ -23,7 +25,7 @@ function leerDB() {
     });
 }
 
-function generarId(electrodomesticos) {
+function crearId(electrodomesticos) {
     let mayorId = 0;
 
     electrodomesticos.forEach((electrodomestico) => {
@@ -41,9 +43,24 @@ async function findOneById(id) {
     const electrodomesticos = await leerDB();
     const electrodomestico = electrodomesticos.find((element) => element.id === id);
 
-    if (!electrodomestico) throw new Error("Error. El Id no corresponde a un coche en existencia.");
+    if (!electrodomestico) throw new Error("Error. El Id no corresponde a un electrodomestico en existencia.");
 
     return electrodomestico;
+}
+
+async function actualizarElectro(electrodomestico) {
+    // eslint-disable-next-line max-len
+    if (!electrodomestico?.id || !electrodomestico?.prodType || !electrodomestico?.brand || !electrodomestico?.model || !electrodomestico?.price || !electrodomestico?.stock) throw new Error("Error. Datos incompletos.");
+
+    let electrodomesticos = await leerDB();
+    const indice = electrodomesticos.findIndex((element) => element.id === electrodomestico.id);
+
+    if (indice < 0) throw new Error("Error. El Id no corresponde a un electrodomestico en existencia.");
+
+    electrodomesticos[indice] = electrodomestico;
+    await create(electrodomesticos);
+
+    return electrodomesticos[indice];
 }
 
 async function guardarElectrodomestico(electrodomestico) {
@@ -51,7 +68,7 @@ async function guardarElectrodomestico(electrodomestico) {
     if (!electrodomestico?.prodType || !electrodomestico?.brand || !electrodomestico?.model || !electrodomestico?.price || !electrodomestico?.stock) throw new Error("Error. Datos incompletos.");
 
     let electrodomesticos = await leerDB();
-    const electrodomesticoConId = { id: generarId(electrodomesticos), ...electrodomestico };
+    const electrodomesticoConId = { id: crearId(electrodomesticos), ...electrodomestico };
 
     electrodomesticos.push(electrodomesticoConId);
     await create(electrodomesticos);
@@ -64,4 +81,19 @@ async function leerElectrodomestico() {
     return electros;
 }
 
-module.exports = { guardarElectrodomestico, leerElectrodomestico, findOneById };
+async function destroy(id) {
+    if (!id) throw new Error("Error. El Id está indefinido.");
+
+    let electrodomesticos = await leerDB();
+    const indice = electrodomesticos.findIndex((element) => element.id === id);
+
+    if (indice < 0) throw new Error("Error. El Id no corresponde a un electrodomestico en existencia.");
+
+    const electrodomestico = electrodomesticos[indice];
+    electrodomesticos.splice(indice, 1);
+    await create(electrodomesticos);
+
+    return electrodomestico;
+}
+
+module.exports = { guardarElectrodomestico, leerElectrodomestico, findOneById, actualizarElectro, destroy };

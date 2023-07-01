@@ -1,5 +1,5 @@
 const express = require("express");
-const { guardarElectrodomestico, leerElectrodomestico, findOneById } = require("./src/electro.manager.js");
+const { guardarElectrodomestico, leerElectrodomestico, findOneById, actualizarElectro, destroy } = require("./src/electro.manager.js");
 
 require('dotenv').config();
 
@@ -27,15 +27,31 @@ app.get('/electro/:id', (req, res) => {
         .catch((error) => res.status(400).send(error.message));
 });
 
-// Crear un nuevo Electrodomesticos.
+// Crear un nuevo Electrodomestico.
 app.post('/electro', (req, res) => {
     const { prodType, brand, model, price, stock } = req.body;
-    //Variables para almacenar en INT
-    const intPrice = Number(price);
-    const intStock = Number(stock);
 
-    guardarElectrodomestico({ prodType, brand, model, price: intPrice, stock: intStock })
-        .then((electrodomesticos) => res.status(201).send(electrodomesticos))
+    guardarElectrodomestico({ prodType, brand, model, price: Number(price), stock: Number(stock) })
+        .then(() => res.status(201).send(`El electrodomestico ${prodType}, marca ${brand}, modelo ${model} fue creado correctamente!</t>`))
+        .catch((error) => res.status(400).send(error.message));
+});
+
+// Actualizar un Electrodomestico específico
+app.put('/electro/:id', (req, res) => {
+    const { id } = req.params;
+    const { prodType, brand, model, price, stock } = req.body;
+
+    actualizarElectro({ id: Number(id), prodType, brand, model, price: Number(price), stock: Number(stock) })
+        .then(() => res.status(200).send(`El electrodomestico ${prodType}, marca ${brand}, modelo ${model} fue actualizado correctamente!`))
+        .catch((error) => res.status(400).send(error.message));
+});
+
+// Eliminar un electrodomestico específico.
+app.delete('/electro/:id', (req, res) => {
+    const { id } = req.params;
+
+    destroy(Number(id))
+        .then((electrodomestico) => res.status(200).send(electrodomestico))
         .catch((error) => res.status(400).send(error.message));
 });
 
